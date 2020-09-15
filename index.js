@@ -1,103 +1,88 @@
 /*************************** */
 /** ES5 */
-function Builder (int) {
-    this.int = int;
+
+class Builder {
+    constructor(value) {
+        this.value = value;
+    }
+    get() {
+        return this.value;
+    }
 }
 
-Builder.prototype.get = function () {
-    console.log(this.int);
-    return this;
-}
-
-
-function IntBuilder(int) {
-    Builder.call(this, int);
+function IntBuilder(value) {
+    Builder.constructor.call(this);
+    this.value = value;
 }
 IntBuilder.prototype = Object.create(Builder.prototype);
 IntBuilder.prototype.constructor = Builder;
 
 IntBuilder.prototype.plus = function (...arg) {
     let sum = 0;
-    [...arg].forEach((elem) => {
+    arg.forEach((elem) => {
         sum += elem; 
     })
-    this.int += sum;
+    this.value += sum;
 
-    console.log(this.int);
     return this;
 }
 
 IntBuilder.prototype.minus = function (...arg) {
     let sum = 0;
-    [...arg].forEach((elem) => {
+    arg.forEach((elem) => {
         sum += elem; 
     })
-    this.int -= sum;
+    this.value -= sum;
 
-    console.log(this.int);
     return this;
 }
 
 IntBuilder.prototype.multiply = function (n) {
-    this.int = this.int * n;
+    this.value = this.value * n;
 
-    console.log(this.int);
     return this;
 }
 
 IntBuilder.prototype.divide = function (n) {
-    this.int = parseInt(this.int / n);
+    this.value = parseInt(this.value / n);
 
-    console.log(this.int);
     return this;
 }
 
 IntBuilder.prototype.mod = function (n) {
-    this.int = this.int % n;
+    this.value = this.value % n;
 
-    console.log(this.int);
     return this;
 }
 
 IntBuilder.random = function (from, to) {
-    this.int = Math.floor(from + Math.random() * (to + 1 - from));
+    let num = Math.floor(from + Math.random() * (to + 1 - from));
 
-    console.log(this.int);
-    return this;
+    return num;
 }
 
-IntBuilder.random(10, 100);
+console.log(IntBuilder.random(10, 100));
 
 let intBuilder = new IntBuilder(10);
 
-intBuilder
+console.log(intBuilder
     .plus(2, 3, 2)
     .minus(1, 2)
     .multiply(2)
     .divide(4)
     .mod(3)
-    .get();
+    .get());
 
 
 
 
 /*************************** */
 /** ES6 */
-class Builder {
-    constructor(str) {
-        this.str = str;
-    }
-    get() {
-        console.log(this.str);
-        return this;
-    }
-}
-
 
 class StringBuilder extends Builder{
-    constructor(str) {
-        super(str);
-        this.str = str;
+    constructor(value) {
+        super(value);
+        this.value = value;
     }
 
     plus(...str) {
@@ -105,36 +90,32 @@ class StringBuilder extends Builder{
         str.forEach((elem) => {
             sum += elem; 
         })
-        this.str = this.str + sum;
+        this.value += sum;
 
-        console.log(this.str);
         return this;
     }
 
     minus(n) {
-        this.str = this.str.substring(0, this.str.length - n);
+        this.value = this.value.substring(0, this.value.length - n);
        
-        console.log(this.str);
         return this;
     }
 
     multiply(int) {
-        this.str = this.str.repeat(int);
+        this.value = this.value.repeat(int);
         
-        console.log(this.str);
         return this;
     }
 
     divide(n) {
-        let k = Math.floor(this.str.length / n);
-        this.str = this.str.substring(0, k);
+        let k = Math.floor(this.value.length / n);
+        this.value = this.value.substring(0, k);
 
-        console.log(this.str);
         return this;
     }
 
     remove(str) {
-        let arr = [...this.str]
+        let arr = [...this.value]
         arr.forEach((elem, i) => {
             if (elem === str) {
                 delete arr[i];
@@ -142,27 +123,25 @@ class StringBuilder extends Builder{
                 return elem;
             }
         })
-        this.str = arr.join('');
+        this.value = arr.join('');
 
-        console.log(this.str);
         return this;
     }
 
     sub(from, n) {
-        this.str = this.str.substring(from, n);
+        this.value = this.value.substring(from, n);
 
-        console.log(this.str);
         return this;
     }
 }   
 
 let strBuilder = new StringBuilder('Hello');
 
-strBuilder
+console.log(strBuilder
     .plus(' all', '!')
     .minus(4)
     .multiply(3)
     .divide(4)
     .remove('l')
     .sub(1, 2)
-    .get();
+    .get());
