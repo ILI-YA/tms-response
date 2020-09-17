@@ -11,7 +11,7 @@ class Builder {
 }
 
 function IntBuilder(value) {
-    Builder.constructor.call(this);
+    Builder.constructor.call(this, value);
     this.value = value;
 }
 IntBuilder.prototype = Object.create(Builder.prototype);
@@ -82,7 +82,6 @@ console.log(intBuilder
 class StringBuilder extends Builder{
     constructor(value) {
         super(value);
-        this.value = value;
     }
 
     plus(...str) {
