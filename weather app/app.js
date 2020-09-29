@@ -1,9 +1,10 @@
 
-const YOUR_ACCESS_KEY = '1a586478fdd3974a3746ab47ee1b48da';
 
 async function getWeather({
     city, country
 }) {
+    const YOUR_ACCESS_KEY = '1a586478fdd3974a3746ab47ee1b48da';
+    
     const res = await fetch(`http://api.weatherstack.com/current?access_key=${YOUR_ACCESS_KEY}&query="${city} ${country}"`);
     const data = await res.json();
     const { temperature, weather_descriptions, weather_icons, observation_time, wind_dir, wind_speed, pressure } = data.current;
@@ -25,8 +26,11 @@ async function getWeather({
 }
 
 btn.onclick = function() {
+    let city = document.getElementById("city").value;
+    let country = document.getElementById("country").value;
+    
     getWeather({
-    city: document.getElementById("city").value,
-    country: document.getElementById("country").value
+    city: city,
+    country:  country
     });
 }
