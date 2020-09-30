@@ -18,94 +18,111 @@ class BinarySearchTree {
     }
   
     insert(key, value) {
-        let newNode = new Node(key, value);
+        const node = new Node(key, value);
 
-        if (this.root === null) {
-            this.root = newNode;
+        if(!this.root) {
+            this.root = node;
         } else {
-            const insertNode = (node) => {
-                if (key < node.key) {
-                    if (node.left === null) {
-                        node.left = newNode;
-                    } else {
-                        insertNode(node.left);
-                    }
-                } else {
-                    if (node.right === null) {
-                        node.right = newNode;
-                    } else {
-                        insertNode(node.right);
-                    }
-                }
-            }
-            insertNode(this.root);
+            this.insertNode(this.root, node);
         } 
-        return this; 
+        return this;
     }
 
-    search(key) {
-        let currentNode = this.root;
-
-        while (currentNode) {
-            if (key === currentNode.key) {
-                return currentNode.value;
+    insertNode(parent, nodeToInsert) {
+        if (parent.key > nodeToInsert.key) {
+            if(parent.left) {
+                this.insertNode(parent.left, nodeToInsert);
+            } else {
+                parent.left = nodeToInsert;
             }
-            if (key < currentNode.key) {
-                currentNode = currentNode.left;
-            } 
-            if (key > currentNode.key) {
-                currentNode = currentNode.right;
+        } else {
+            if(parent.right) {
+                this.insertNode(parent.right, nodeToInsert);
+            } else {
+                parent.right = nodeToInsert;
             }
         }
     }
 
+    search(key) {
+        const {node} = this.searchNode(null, this.root, key);
+        return node.value;
+    }  
+
+    searchNode(parent, node, key) {
+        if(!node) {
+            return {};
+        } else if(node.key === key) {
+            return {node, parent}
+        }
+
+        if(key > node.key) {
+            return this.searchNode(node, node.right, key);
+        } else {
+            return this.searchNode(node, node.left, key);
+        }
+    }
+
+
     traverse(value) {
+        let result = [];
+        const transfer = (node) => {
+            if (node.left) {
+                transfer(node.left);
+            }
+            result.push(node.value);
+            if (node.right) {
+                transfer(node.right);
+            }
+        };
+        transfer(this.root);
         if (value) {
-            let result = [];
-            const transfer = (node) => {
-                if (node.left) {
-                    transfer(node.left);
-                }
-                result.push(node.value);
-                if (node.right) {
-                    transfer(node.right);
-                }
-            };
-            transfer(this.root);
             return result;
         } else {
-            let result = [];
-            const transfer = (node) => {
-                if (node.right) {
-                    transfer(node.right);
-                }
-                result.push(node.value);
-                if (node.left) {
-                    transfer(node.left);
-                }
-            };
-            transfer(this.root);
-            return result;
+            return result.reverse();
         }  
     }
 
     contains(value) {
         let arr = this.traverse(true);
-        let ans;
-        arr.some((elem) => {
-            if (value === elem) {
-                return ans = true;
-            } else {
-                return ans = false;
-            }
-        });
-        return ans;
+
+        return arr.some((elem) => elem === value);
+    }
+
+    minNode(node, parent) {
+        if(!node) {
+            return null;
+        }
+        if(node.left) {
+            return this.minNode(node.left, node);
+        }
+        return {parent, node};
+    }
+
+    delete(key) {
+        const {node: nodeToDelete, parent: parentToDelete} = this.searchNode(null, this.root, key);
+        const {node: minNode, parent: minParent} = this.minNode(nodeToDelete.right);
+
+        if(parentToDelete.right.key === key) {
+            parentToDelete.right = minNode;
+        } else {
+            parentToDelete.left = minNode;
+        }
+
+        if(minParent) {
+            minParent.left = null;
+            minNode.right = nodeToDelete.right;
+        }
+
+        minNode.left = nodeToDelete.left;
     }
 }
   
 let bst = new BinarySearchTree();
 
-bst.insert(15, 'fifteen')
+
+bst
+    .insert(15, 'fifteen')
     .insert(13, 'thirteen')
     .insert(11, 'eleven')
     .insert(14, 'fourteen')
